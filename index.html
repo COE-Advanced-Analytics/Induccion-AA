@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Analytics - Alicorp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --alicorp-red: #E31E24;
+      --alicorp-orange: #FF6B35;
+      --alicorp-blue: #0056A3;
+      --alicorp-green: #00A859;
+      --alicorp-yellow: #FFB81C;
+      --alicorp-gray: #4A4A4A;
+      --white: #ffffff;
+      --soft: #f5f6f8;
+      --dark: #222;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(135deg, var(--alicorp-red) 0%, var(--alicorp-orange) 100%);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       CONTENEDOR GENERAL
+    ========================= */
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--alicorp-red), var(--alicorp-orange), var(--alicorp-yellow), var(--alicorp-green), var(--alicorp-blue));
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--alicorp-red);
+      font-size: 3em;
+      margin-bottom: 10px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--alicorp-gray);
+      font-size: 1.3em;
+      font-weight: 600;
+    }
+
+    .tagline {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: var(--alicorp-green);
+      font-style: italic;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,168,89,0.2);
+    }
+
+    /* =========================================================
+       MENÚ (VISTA INICIAL) + CONTENIDO (VISTA SECCIONES)
+    ========================================================= */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* =========================
+       MENU VIEW (TARJETAS)
+    ========================= */
+    #menuView {
+      animation: fadeIn 0.5s ease;
+    }
+
+    .menu-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 25px;
+    }
+    /* ✅ Título del menú (solo en la vista menú) */
+    .menu-title{
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.8em;
+      font-weight: 900;
+      color: #ffffff;
+      padding-bottom: 0 ;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      letter-spacing: 1px;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .menu-header{
+  margin-bottom: 30px;
+    }
+
+    .menu-line{
+      width: 100%;
+      height: 5px;
+      background: rgba(255,255,255,0.65);
+      margin-top: 14px;
+      border-radius: 999px;
+    }
+
+
+    .menu-card{
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border: 2px solid rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-card::before{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--alicorp-blue), var(--alicorp-green), var(--alicorp-yellow));
+      opacity: 0.9;
+    }
+
+    .menu-card:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+    }
+
+    .menu-card h3{
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--alicorp-red);
+      font-size: 1.15em;
+    }
+
+    .menu-card p{
+      color: #555;
+      font-weight: 600;
+      font-size: 0.95em;
+    }
+
+    /* =========================
+       CONTENT VIEW (NAVEGACIÓN)
+    ========================= */
+    .topbar{
+      background: white;
+      padding: 14px 18px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 14px;
+      position: sticky;
+      top: 16px;
+      z-index: 200;
+      margin-bottom: 22px;
+    }
+
+    /* Botón volver al menú MÁS NOTORIO */
+    #backBtn{
+      border: none;
+      cursor: pointer;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: white;
+      background: linear-gradient(135deg, var(--alicorp-red) 0%, #c71f25 100%);
+      box-shadow: 0 12px 28px rgba(227,30,36,0.35);
+      transition: 0.2s ease;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    #backBtn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(227,30,36,0.45);
+    }
+
+    #backBtn .icon{
+      width: 26px; height: 26px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      font-size: 16px;
+    }
+
+    /* 👇 Quitamos el título de la topbar (ya no aparece arriba) */
+    #sectionTitle{ display:none; }
+
+    /* =========================
+       SECCIONES (TAB)
+    ========================= */
+    section{
+      background: white;
+      padding: 45px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      margin-bottom: 35px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .tab-section{ display:none; }
+    .tab-section.active{ display:block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--alicorp-red);
+      font-size: 2.2em;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 4px solid var(--alicorp-red);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    h3{
+      font-family: 'Montserrat', sans-serif;
+      color: var(--alicorp-orange);
+      font-size: 1.6em;
+      margin-top: 30px;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .team-photo {
+      width: 100%;
+      max-width: 900px;
+      margin: 35px auto;
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .team-photo:hover { transform: scale(1.02); }
+
+    .organigrama{
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 35px;
+      border-radius: 15px;
+      margin: 25px 0;
+      border: 2px solid var(--alicorp-blue);
+    }
+    .org-level{
+      margin: 20px 0;
+      padding: 18px;
+      background: white;
+      border-radius: 12px;
+      border-left: 6px solid var(--alicorp-red);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+    .org-level:hover{
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .lead-box{
+      background: linear-gradient(135deg, var(--alicorp-red) 0%, #c71f25 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      margin: 20px 0;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.3em;
+      box-shadow: 0 8px 25px rgba(227,30,36,0.4);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .team-member{
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border-left: 5px solid var(--alicorp-blue);
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    .team-member:hover{
+      transform: translateX(8px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-left-color: var(--alicorp-green);
+    }
+    .team-member.destacado{
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border-left: 5px solid #2196F3;
+      font-weight: 700;
+    }
+
+    .question-card{
+      background: linear-gradient(135deg, #fff9e6 0%, var(--alicorp-yellow) 100%);
+      padding: 30px;
+      border-radius: 15px;
+      margin: 25px 0;
+      box-shadow: 0 8px 20px rgba(255,184,28,0.3);
+    }
+    .question-card h3{
+      color: var(--alicorp-red);
+      margin-top: 0;
+      font-size: 1.5em;
+    }
+    .question-card ul{ list-style: none; padding-left: 0; }
+    .question-card li{
+      padding: 10px 0;
+      padding-left: 30px;
+      position: relative;
+      font-weight: 500;
+    }
+    .question-card li:before{
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--alicorp-red);
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .role-box{
+      background: linear-gradient(135deg, var(--alicorp-blue) 0%, #003d7a 100%);
+      color: white;
+      padding: 28px;
+      border-radius: 15px;
+      margin: 25px 0;
+      box-shadow: 0 8px 25px rgba(0,86,163,0.4);
+    }
+    .role-box h3{
+      color: white;
+      margin-top: 0;
+      border-bottom: 3px solid white;
+      padding-bottom: 12px;
+    }
+    .role-box ul{ list-style: none; padding-left: 0; }
+    .role-box li{
+      padding: 10px 0;
+      padding-left: 30px;
+      position: relative;
+      font-weight: 500;
+    }
+    .role-box li:before{
+      content: "✓";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .concept-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 22px;
+      margin: 25px 0;
+    }
+    .concept-card{
+      background: linear-gradient(135deg, var(--alicorp-blue) 0%, #0084d4 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,86,163,0.3);
+      transition: all 0.3s ease;
+    }
+    .concept-card:hover{
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,86,163,0.4);
+    }
+    .concept-card h4{
+      margin-bottom: 12px;
+      font-size: 1.4em;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .project-box{
+      background: white;
+      border: 4px solid var(--alicorp-red);
+      padding: 30px;
+      border-radius: 20px;
+      margin: 25px 0;
+      transition: all 0.3s ease;
+    }
+    .project-box:hover{
+      box-shadow: 0 15px 35px rgba(227,30,36,0.3);
+      transform: translateY(-5px);
+    }
+    .project-header{
+      background: linear-gradient(135deg, var(--alicorp-red) 0%, var(--alicorp-orange) 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin: -30px -30px 25px -30px;
+    }
+
+    .initiative-box{
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      padding: 22px;
+      border-radius: 12px;
+      margin: 18px 0;
+      border-left: 6px solid var(--alicorp-green);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+
+    .status-badge{
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.9em;
+      margin-top: 12px;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-produccion { background: var(--alicorp-green); color: white; }
+    .status-piloto { background: var(--alicorp-yellow); color: #333; }
+    .status-desarrollo { background: var(--alicorp-blue); color: white; }
+    .status-prepiloto { background: var(--alicorp-orange); color: white; }
+
+    .app-card{
+      background: linear-gradient(135deg, var(--alicorp-green) 0%, #008a4a 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 20px;
+      margin: 20px 0;
+      box-shadow: 0 10px 30px rgba(0,168,89,0.3);
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .app-card:hover{
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,168,89,0.4);
+    }
+    .app-card img{
+      max-width: 220px;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      border: 3px solid white;
+    }
+    .app-card-content{ flex: 1; }
+    .app-card h4{
+      font-size: 1.7em;
+      margin-bottom: 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+    }
+    .app-card ul{ list-style: none; padding-left: 0; }
+    .app-card li{
+      padding: 8px 0;
+      padding-left: 25px;
+      position: relative;
+      font-weight: 500;
+    }
+    .app-card li:before{
+      content: "✓";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .responsible-list{
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      padding: 18px;
+      border-radius: 10px;
+      margin: 15px 0;
+      border: 2px solid var(--alicorp-blue);
+    }
+    .responsible-list strong{
+      color: var(--alicorp-red);
+      display: block;
+      margin-bottom: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1em;
+    }
+
+    /* =========================================================
+       ✅ NAVEGACIÓN INFERIOR ENTRE SECCIONES
+    ========================================================= */
+    .section-nav{
+      margin-top: 50px;
+      display:flex;
+      justify-content: flex-end;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn{
+      background: linear-gradient(135deg, var(--alicorp-blue), #003d7a);
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      box-shadow: 0 8px 20px rgba(0,86,163,0.3);
+      transition: .2s;
+      letter-spacing: 0.4px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .nav-btn:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,86,163,0.4);
+    }
+
+    .nav-btn.secondary{
+      background: linear-gradient(135deg, #6b7280, #374151);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+    .nav-btn.secondary:hover{
+      box-shadow: 0 12px 28px rgba(0,0,0,0.26);
+    }
+
+    /* Footer */
+    footer {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      color: #666;
+      margin-top: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    footer p:first-child{
+      font-size: 1.1em;
+      font-weight: 700;
+      color: var(--alicorp-red);
+    }
+
+    /* Scroll top */
+    .scroll-top {
+      position: fixed;
+      bottom: 35px;
+      right: 35px;
+      background: linear-gradient(135deg, var(--alicorp-red) 0%, #c71f25 100%);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(227,30,36,0.5);
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+      font-size: 1.5em;
+      font-weight: bold;
+      z-index: 400;
+    }
+    .scroll-top.visible { opacity: 1; visibility: visible; }
+    .scroll-top:hover {
+      background: linear-gradient(135deg, var(--alicorp-orange) 0%, var(--alicorp-yellow) 100%);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 35px rgba(255,107,53,0.5);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2em; }
+      section { padding: 25px; }
+      .concept-grid { grid-template-columns: 1fr; }
+      .app-card { flex-direction: column; text-align: center; }
+      .app-card img { max-width: 100%; }
+      .topbar{ top: 10px; }
+    }
+    .header-logo{
+        height: 100px;        /* 👈 cambia este número si lo quieres más chico */
+        width: auto;
+        max-width: 100%;
+        display: block;
+        margin: 0 auto 20px auto;
+        object-fit: contain;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <img src="logo.jpg" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+      <p class="subtitle">Capacitación - Alicorp</p>
+      <p class="tagline">✨ Alimentando un mañana mejor ✨</p>
+    </header>
+
+    <!-- =========================
+         MENU VIEW
+    ========================= -->
+    <div id="menuView" class="view active">
+      <div class="menu-header">
+        <h2 class="menu-title">📌 Menú</h2>
+        <div class="menu-line"></div>
+      </div>
+
+
+      <div class="menu-grid">
+        <div class="menu-card" data-go="organigrama">
+          <h3>📊 Organigrama</h3>
+          <p>Equipo, estructura y roles.</p>
+        </div>
+
+        <div class="menu-card" data-go="preguntas-clave">
+          <h3>❓ Preguntas Clave</h3>
+          <p>Qué hacemos, cómo y por qué.</p>
+        </div>
+
+        <div class="menu-card" data-go="roles">
+          <h3>👥 Roles</h3>
+          <p>Responsabilidades del equipo.</p>
+        </div>
+
+        <div class="menu-card" data-go="negocio">
+          <h3>💼 Entendimiento Comercial</h3>
+          <p>Conceptos clave del negocio.</p>
+        </div>
+
+        <div class="menu-card" data-go="esquemas">
+          <h3>📈 Esquemas Visuales</h3>
+          <p>Diagramas y estructura.</p>
+        </div>
+
+        <div class="menu-card" data-go="aplicaciones">
+          <h3>📱 Aplicaciones</h3>
+          <p>Nitro, DiaDia, Insuma, Aliados.</p>
+        </div>
+
+        <div class="menu-card" data-go="proyectos">
+          <h3>🎯 Proyectos</h3>
+          <p>GTM, Loyalty, Finanzas, MMM.</p>
+        </div>
+
+        <div class="menu-card" data-go="trabajos-transversales">
+          <h3>🧩 Trabajos Transversales</h3>
+          <p>MLOps y Modelo Dimensional.</p>
+        </div>
+
+        <div class="menu-card" data-go="areas-negocio">
+          <h3>🏢 Áreas de Negocio</h3>
+          <p>Finanzas, Comercial, Loyalty.</p>
+        </div>
+      </div>
+
+      <p style="text-align:center; margin-top: 25px; color: rgba(255,255,255,0.95); font-weight: 700;">
+        Haz click en una tarjeta para entrar a la sección.
+      </p>
+    </div>
+
+    <!-- =========================
+         CONTENT VIEW
+    ========================= -->
+    <div id="contentView" class="view">
+      <div class="topbar">
+        <button id="backBtn" type="button" aria-label="Volver al menú">
+          <span class="icon">←</span> VOLVER AL MENÚ
+        </button>
+        <div id="sectionTitle"></div>
+      </div>
+
+      <!-- =========================================================
+           ORGANIGRAMA
+      ========================================================= -->
+      <section id="organigrama" class="tab-section">
+        <h2>📊 Organigrama</h2>
+
+        <div class="organigrama">
+          <div class="org-level">
+            <strong>Dirección de Tecnología y Transformación</strong>
+          </div>
+          <div class="org-level" style="margin-left: 30px;">
+            <strong>Dirección del CoE de Transformación Digital, Data y Analytics</strong>
+          </div>
+          <div class="org-level" style="margin-left: 60px;">
+            <strong>Gerencia Corporativa de Data y Analítica Avanzada</strong>
+          </div>
+          <div class="org-level" style="margin-left: 90px;">
+            <strong>Analítica Avanzada</strong>
+          </div>
+        </div>
+
+        <h3>Equipo Advanced Analytics</h3>
+        <img src="integrantes_AA.png" alt="Equipo Advanced Analytics" class="team-photo" onerror="this.style.display='none'">
+
+        <div class="lead-box">🎯 Julio Bernal - Líder Advanced Analytics</div>
+
+        <h4 style="color: var(--alicorp-red); margin-top: 30px; font-family: 'Montserrat', sans-serif;">Data Scientists Senior (SR)</h4>
+        <div class="team-member">👤 Alexis Balboa – Data Scientist SR</div>
+        <div class="team-member destacado">👤 Daniel Incapuño – Data Scientist SR</div>
+        <div class="team-member">👤 Brigitt Ramirez – Data Scientist SR</div>
+        <div class="team-member">👤 David Alata – Data Scientist SR</div>
+
+        <h4 style="color: var(--alicorp-red); margin-top: 30px; font-family: 'Montserrat', sans-serif;">Data Scientists</h4>
+        <div class="team-member destacado">👤 Sheila Cachua – Data Scientist</div>
+        <div class="team-member">👤 Verónica Cáceres – Data Scientist</div>
+        <div class="team-member">👤 Alexis Sucasaca – Data Scientist</div>
+        <div class="team-member">👤 Camila Augurto – Data Scientist</div>
+        <div class="team-member">👤 Iris Sutizal – Data Scientist</div>
+
+        <h4 style="color: var(--alicorp-red); margin-top: 30px; font-family: 'Montserrat', sans-serif;">Machine Learning Engineers</h4>
+        <div class="team-member">👤 Alexis Castillo – Machine Learning Engineer</div>
+        <div class="team-member destacado">👤 Williams Enciso – Machine Learning Engineer</div>
+
+        <h4 style="color: var(--alicorp-red); margin-top: 30px; font-family: 'Montserrat', sans-serif;">Practicante</h4>
+        <div class="team-member">👤 Diego Arroyo – Practicante Data Science</div>
+
+        <!-- ✅ NAVEGACIÓN INFERIOR -->
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="preguntas-clave">Siguiente → Preguntas Clave</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PREGUNTAS CLAVE
+      ========================================================= -->
+      <section id="preguntas-clave" class="tab-section">
+        <h2>❓ Preguntas Clave Advanced Analytics</h2>
+
+        <div class="question-card">
+          <h3>¿Qué hace?</h3>
+          <ul>
+            <li>Desarrollamos análisis descriptivos y predictivos</li>
+            <li>Diseñamos algoritmos de Machine Learning</li>
+            <li>Generamos información de alto valor para la toma de decisiones</li>
+            <li>Impactamos directamente en métricas clave del negocio</li>
+            <li>Adaptamos las soluciones al nivel de complejidad de cada área</li>
+          </ul>
+        </div>
+
+        <div class="question-card">
+          <h3>¿Cómo lo hace?</h3>
+          <ul>
+            <li>Investigamos y desarrollamos soluciones analíticas innovadoras</li>
+            <li>Aplicamos metodologías que guían cada proyecto de inicio a fin</li>
+            <li>Nos apoyamos en un sólido conocimiento técnico</li>
+            <li>Integramos una comprensión profunda del negocio</li>
+          </ul>
+        </div>
+
+        <div class="question-card">
+          <h3>¿Por qué lo hace?</h3>
+          <ul>
+            <li>Buscamos ser referentes en analítica avanzada</li>
+            <li>Promovemos un enfoque constante de investigación e innovación</li>
+            <li>Generamos impacto sostenible en el negocio a través de datos</li>
+          </ul>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="roles">Siguiente → Roles</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           ROLES
+      ========================================================= -->
+      <section id="roles" class="tab-section">
+        <h2>👥 Roles del Equipo</h2>
+
+        <div class="role-box">
+          <h3>LEAD AA</h3>
+          <ul>
+            <li>Lidera estratégicamente el área de Advanced Analytics</li>
+            <li>Asegura la calidad técnica de las soluciones analíticas</li>
+            <li>Alinea los proyectos con los objetivos del negocio</li>
+            <li>Prioriza iniciativas y coordina con las áreas usuarias</li>
+          </ul>
+        </div>
+
+        <div class="role-box" style="background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);">
+          <h3>Data Scientist Senior</h3>
+          <ul>
+            <li>Lidera la ejecución de proyectos complejos de analítica avanzada</li>
+            <li>Gestiona técnicamente a los Data Scientists asignados</li>
+            <li>Actúa como referente técnico y metodológico del equipo</li>
+            <li>Es el principal interlocutor con los stakeholders de los proyectos</li>
+          </ul>
+        </div>
+
+        <div class="role-box" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);">
+          <h3>Data Scientist</h3>
+          <ul>
+            <li>Ejecuta de forma autónoma y proactiva las fases clave del ciclo de vida de las soluciones analíticas</li>
+            <li>Aplica rigurosamente las mejores prácticas y estándares definidos por el área</li>
+            <li>Desarrolla, valida e implementa modelos analíticos y de Machine Learning</li>
+            <li>Traduce problemas de negocio en soluciones basadas en datos</li>
+          </ul>
+        </div>
+
+        <div class="role-box" style="background: linear-gradient(135deg, var(--alicorp-green) 0%, #008a4a 100%);">
+          <h3>Machine Learning Engineer</h3>
+          <ul>
+            <li>Operacionalización técnica de modelos de machine learning</li>
+            <li>Despliegue correcto de los modelos en entornos productivos</li>
+            <li>Monitoreo continuo para garantizar rendimiento y estabilidad</li>
+            <li>Escalabilidad para soportar crecimiento y demanda</li>
+            <li>Mantenimiento para asegurar funcionamiento óptimo a largo plazo</li>
+          </ul>
+        </div>
+
+        <div class="role-box" style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); color: #333;">
+          <h3 style="color: #333; border-bottom: 3px solid #333;">Practicante Data Science</h3>
+          <ul style="color: #333;">
+            <li>Apoyo en las diversas tareas que se le asignen</li>
+          </ul>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="negocio">Siguiente → Entendimiento Comercial</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           NEGOCIO
+      ========================================================= -->
+      <section id="negocio" class="tab-section">
+        <h2>💼 Entendimiento Comercial</h2>
+
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>🏢 Alicorp</h4>
+            <p>Empresa líder de consumo masivo y soluciones B2B, dedicada a desarrollar y comercializar productos de alimentación y cuidado del hogar.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>🎯 CMP y B2B</h4>
+            <p>Alicorp opera en Consumo Masivo (CMP), orientado al consumidor final, y en B2B, enfocado en atender clientes empresariales e industriales.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>🛒 Canales</h4>
+            <p>La operación comercial se organiza principalmente en canal tradicional y canal moderno, cada uno con dinámicas y estrategias diferenciadas.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>⭐ Core</h4>
+            <p>Productos de alta rotación y mayor volumen de venta, son los más comprados.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>💰 Value</h4>
+            <p>Productos enfocados en maximizar rentabilidad y competitividad en precio dentro del portafolio.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>📦 Apudex</h4>
+            <p>SKUs que Alicorp no produce directamente, pero que distribuye como parte de su portafolio comercial.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>📥 Sell In</h4>
+            <p>Venta de Alicorp hacia el canal o cliente directo, enfocada en despachos, facturación y cumplimiento de objetivos comerciales. (Datos que poseemos)</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>📤 Sell Out</h4>
+            <p>Venta hacia el consumidor final, reflejando la demanda real y la rotación del producto en el mercado.</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>🏪 Bocas de Salida CMP</h4>
+            <p>Bodegas (BO), Puestos de mercado (PM), Minimarket (MM)</p>
+          </div>
+
+          <div class="concept-card">
+            <h4>🍽️ Bocas de Salida B2B</h4>
+            <p>Gastronomía (GA): restaurant, pollerías, chifas. Panadería (PA), Limpieza (LV)</p>
+          </div>
+        </div>
+
+        <h3>Estructura de Productos</h3>
+        <div class="concept-grid">
+          <div class="concept-card" style="background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);">
+            <h4>🍝 Food</h4>
+            <p>Línea de productos de alimentación que agrupa múltiples categorías como pastas, aceites y salsas.</p>
+          </div>
+
+          <div class="concept-card" style="background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);">
+            <h4>🧹 No Food</h4>
+            <p>Línea de productos para el hogar (Home Care) que incluye categorías como detergentes y lavavajillas.</p>
+          </div>
+
+          <div class="concept-card" style="background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);">
+            <h4>💆 Personal Care</h4>
+            <p>Línea de productos de cuidado personal, como shampoo y acondicionador.</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 30px;">🏆 Marcas Emblemáticas</h3>
+        <p style="margin-bottom: 20px;">Marcas históricas y representativas de Alicorp que lideran sus categorías y generan alta recordación y confianza en el consumidor:</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
+          <div style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;">Primor</div>
+          <div style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;">Don Vittorio</div>
+          <div style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;">Alacena</div>
+          <div style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;">Bolívar</div>
+          <div style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;">Amarás</div>
+          <div style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;">Casino</div>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="esquemas">Siguiente → Esquemas Visuales</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           ESQUEMAS
+           (Incluye tus SVG tal cual los tenías)
+      ========================================================= -->
+      <section id="esquemas" class="tab-section">
+        <h2>📈 Esquemas Visuales</h2>
+
+        <!-- ESQUEMA 1 -->
+        <h3>Estructura de Productos - Alicorp</h3>
+        <div style="background: white; padding: 30px; border-radius: 15px; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+          <!-- 👇 PEGUÉ TU SVG ORIGINAL SIN CAMBIOS -->
+          <svg viewBox="0 0 1100 700" style="width: 100%; height: auto;">
+            <rect x="450" y="20" width="200" height="60" rx="10" fill="#6c7fea"/>
+            <text x="550" y="55" text-anchor="middle" fill="white" font-size="20" font-weight="bold">ALICORP</text>
+            <text x="800" y="50" fill="#333" font-size="16" font-weight="bold">Rubro: consumo masivo</text>
+            <line x1="550" y1="80" x2="550" y2="110" stroke="#333" stroke-width="2"/>
+            <rect x="480" y="110" width="140" height="50" rx="8" fill="#8b7fea"/>
+            <text x="550" y="142" text-anchor="middle" fill="white" font-size="16" font-weight="bold">SKUS</text>
+            <image href="casino.png" x="630" y="95" width="110" height="80" preserveAspectRatio="xMidYMid meet" />
+            <line x1="550" y1="160" x2="550" y2="190" stroke="#333" stroke-width="2"/>
+            <text x="550" y="205" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Tipos</text>
+            <line x1="550" y1="210" x2="550" y2="250" stroke="#333" stroke-width="2"/>
+            <line x1="50" y1="250" x2="1050" y2="250" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+            <line x1="250" y1="250" x2="850" y2="250" stroke="#333" stroke-width="2"/>
+            <line x1="250" y1="250" x2="250" y2="280" stroke="#333" stroke-width="2"/>
+            <line x1="550" y1="250" x2="550" y2="280" stroke="#333" stroke-width="2"/>
+            <line x1="850" y1="250" x2="850" y2="280" stroke="#333" stroke-width="2"/>
+            <rect x="150" y="280" width="200" height="60" rx="10" fill="#3d3d3d"/>
+            <text x="250" y="315" text-anchor="middle" fill="white" font-size="20" font-weight="bold">FOOD</text>
+            <rect x="450" y="280" width="200" height="60" rx="10" fill="#3d3d3d"/>
+            <text x="550" y="315" text-anchor="middle" fill="white" font-size="20" font-weight="bold">NO FOOD</text>
+            <rect x="750" y="280" width="200" height="60" rx="10" fill="#3d3d3d"/>
+            <text x="850" y="305" text-anchor="middle" fill="white" font-size="18" font-weight="bold">PERSONAL</text>
+            <text x="850" y="328" text-anchor="middle" fill="white" font-size="18" font-weight="bold">CARE(PC)</text>
+            <rect x="30" y="280" width="110" height="80" rx="8" fill="#f0f0f0" stroke="#3d3d3d" stroke-width="2"/>
+            <text x="85" y="305" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">IMPULSO</text>
+            <text x="85" y="323" text-anchor="middle" fill="#666" font-size="10">(galletas, cereales,</text>
+            <text x="85" y="337" text-anchor="middle" fill="#666" font-size="10">refrescos,</text>
+            <text x="85" y="351" text-anchor="middle" fill="#666" font-size="10">caramelos)</text>
+            <line x1="140" y1="320" x2="150" y2="320" stroke="#667eea" stroke-width="2"/>
+            <polygon points="150,315 160,320 150,325" fill="#667eea"/>
+            <line x1="250" y1="340" x2="250" y2="380" stroke="#333" stroke-width="2"/>
+            <line x1="550" y1="340" x2="550" y2="380" stroke="#333" stroke-width="2"/>
+            <line x1="850" y1="340" x2="850" y2="380" stroke="#333" stroke-width="2"/>
+            <rect x="150" y="380" width="800" height="50" rx="8" fill="#8b7fea"/>
+            <text x="550" y="412" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Categorías</text>
+            <line x1="250" y1="430" x2="250" y2="450" stroke="#333" stroke-width="2"/>
+            <line x1="550" y1="430" x2="550" y2="450" stroke="#333" stroke-width="2"/>
+            <line x1="850" y1="430" x2="850" y2="450" stroke="#333" stroke-width="2"/>
+            <text x="250" y="470" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Existen 22 categorías</text>
+            <text x="250" y="488" text-anchor="middle" fill="#666" font-size="12">Ejm: Pastas, Aceites, Salsas</text>
+            <text x="550" y="470" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Existen 10 categorías</text>
+            <text x="550" y="488" text-anchor="middle" fill="#666" font-size="12">(Home care)</text>
+            <text x="550" y="503" text-anchor="middle" fill="#666" font-size="12">Ejm: Lavavajillas, Detergentes</text>
+            <text x="850" y="470" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Existen 9 categorías</text>
+            <text x="850" y="488" text-anchor="middle" fill="#666" font-size="12">Ejm: Shampoo, Acondicionador</text>
+            <line x1="250" y1="510" x2="250" y2="540" stroke="#333" stroke-width="2"/>
+            <line x1="550" y1="510" x2="550" y2="540" stroke="#333" stroke-width="2"/>
+            <line x1="850" y1="510" x2="850" y2="540" stroke="#333" stroke-width="2"/>
+            <rect x="150" y="540" width="800" height="50" rx="8" fill="#8b7fea"/>
+            <text x="550" y="572" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Familias</text>
+            <line x1="250" y1="590" x2="250" y2="610" stroke="#333" stroke-width="2"/>
+            <line x1="550" y1="590" x2="550" y2="610" stroke="#333" stroke-width="2"/>
+            <line x1="850" y1="590" x2="850" y2="610" stroke="#333" stroke-width="2"/>
+            <text x="250" y="630" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Existen 113 familias</text>
+            <text x="250" y="648" text-anchor="middle" fill="#666" font-size="12">Ejm: Don Vittorio Clasico</text>
+            <text x="550" y="630" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Existen 53 familias</text>
+            <text x="550" y="648" text-anchor="middle" fill="#666" font-size="12">(Home Care)</text>
+            <text x="550" y="663" text-anchor="middle" fill="#666" font-size="12">Ejm: Sapolio Limpiatodo</text>
+            <text x="850" y="630" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Existen 17 familias</text>
+            <text x="850" y="648" text-anchor="middle" fill="#666" font-size="12">Ejm: Aval Clasico</text>
+          </svg>
+        </div>
+
+        <!-- ESQUEMA 2 -->
+        <h3 style="margin-top: 50px;">Estructura de Negocios y Canales</h3>
+        <div style="background: white; padding: 30px; border-radius: 15px; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+          <svg viewBox="0 0 1400 500" style="width: 100%; height: auto;">
+
+            <rect x="100" y="200" width="180" height="60" rx="10" fill="#6c7fea"/>
+            <text x="190" y="235" text-anchor="middle" fill="white" font-size="18" font-weight="bold">Negocios</text>
+
+            <line x1="280" y1="230" x2="420" y2="230" stroke="#333" stroke-width="3"/>
+            <line x1="420" y1="150" x2="420" y2="310" stroke="#333" stroke-width="3"/>
+            <line x1="420" y1="150" x2="520" y2="150" stroke="#333" stroke-width="3"/>
+            <line x1="420" y1="310" x2="520" y2="310" stroke="#333" stroke-width="3"/>
+
+            <!-- CMP -->
+            <rect x="520" y="120" width="180" height="60" rx="10" fill="#8b7fea"/>
+            <text x="610" y="155" text-anchor="middle" fill="white" font-size="18" font-weight="bold">CMP</text>
+
+            <line x1="700" y1="150" x2="820" y2="150" stroke="#333" stroke-width="2"/>
+            <text x="760" y="140" text-anchor="middle" fill="#0984e3" font-size="14" font-weight="bold">Bocas de salidas</text>
+
+            <rect x="820" y="100" width="280" height="100" rx="8" fill="#e8f4f8" stroke="#0984e3" stroke-width="2"/>
+            <text x="840" y="130" fill="#333" font-size="14">• Bodegas – BO</text>
+            <text x="840" y="155" fill="#333" font-size="14">• Puestos de mercado - PM</text>
+            <text x="840" y="180" fill="#333" font-size="14">• Minimarket - MM</text>
+
+            <image href="botella.png" x="560" y="190" width="100" height="70" preserveAspectRatio="xMidYMid meet" />
+
+            <!-- B2B -->
+            <rect x="520" y="280" width="180" height="60" rx="10" fill="#8b7fea"/>
+            <text x="610" y="315" text-anchor="middle" fill="white" font-size="18" font-weight="bold">B2B</text>
+
+            <line x1="700" y1="310" x2="820" y2="310" stroke="#333" stroke-width="2"/>
+            <text x="760" y="300" text-anchor="middle" fill="#0984e3" font-size="14" font-weight="bold">Bocas de salidas</text>
+
+            <rect x="820" y="260" width="280" height="100" rx="8" fill="#e8f4f8" stroke="#0984e3" stroke-width="2"/>
+            <text x="840" y="290" fill="#333" font-size="14">• Gastronomía – GA</text>
+            <text x="840" y="315" fill="#333" font-size="14">• Panadería - PA</text>
+            <text x="840" y="340" fill="#333" font-size="14">• Limpieza - LV</text>
+
+            <text x="960" y="385" text-anchor="middle" fill="#999" font-size="11" font-style="italic">
+              * La boca de salida Gastronomía presenta giros
+            </text>
+            <text x="960" y="400" text-anchor="middle" fill="#999" font-size="11" font-style="italic">
+              (restaurante, pollerías, chifas)
+            </text>
+
+            <image href="galon.png" x="560" y="350" width="100" height="70" preserveAspectRatio="xMidYMid meet" />
+
+          </svg>
+        </div>
+
+
+        <!-- ESQUEMA 3 -->
+        <h3 style="margin-top: 50px;">Canales de Distribución - Sell In & Sell Out</h3>
+        <div style="background: white; padding: 30px; border-radius: 15px; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+          <!-- 👇 PEGUÉ TU SVG ORIGINAL SIN CAMBIOS -->
+          <svg viewBox="0 0 1600 700" style="width: 100%; height: auto;">
+            <rect x="80" y="280" width="180" height="70" rx="10" fill="#6c7fea"/>
+            <text x="170" y="320" text-anchor="middle" fill="white" font-size="20" font-weight="bold">ALICORP</text>
+            <line x1="260" y1="315" x2="380" y2="315" stroke="#0984e3" stroke-width="4"/>
+            <line x1="380" y1="185" x2="380" y2="450" stroke="#0984e3" stroke-width="4"/>
+            <line x1="380" y1="185" x2="470" y2="185" stroke="#0984e3" stroke-width="4"/>
+            <line x1="380" y1="450" x2="470" y2="450" stroke="#0984e3" stroke-width="4"/>
+            <rect x="470" y="150" width="200" height="70" rx="10" fill="#8b7fea"/>
+            <text x="570" y="190" text-anchor="middle" fill="white" font-size="20" font-weight="bold">TRADICIONAL</text>
+            <text x="690" y="170" fill="#0984e3" font-size="16" font-weight="bold">SELL IN</text>
+            <line x1="670" y1="185" x2="750" y2="185" stroke="#0984e3" stroke-width="3"/>
+            <line x1="750" y1="120" x2="750" y2="250" stroke="#0984e3" stroke-width="3"/>
+            <line x1="750" y1="120" x2="800" y2="120" stroke="#0984e3" stroke-width="3"/>
+            <line x1="750" y1="185" x2="800" y2="185" stroke="#0984e3" stroke-width="3"/>
+            <line x1="750" y1="250" x2="800" y2="250" stroke="#0984e3" stroke-width="3"/>
+            <rect x="800" y="70" width="320" height="200" rx="8" fill="#e3f2fd" stroke="#0984e3" stroke-width="3"/>
+            <text x="960" y="95" text-anchor="middle" fill="#0984e3" font-size="18" font-weight="bold">SELL OUTS</text>
+            <rect x="820" y="110" width="280" height="50" rx="5" fill="#fff9e6" stroke="#f39c12" stroke-width="2"/>
+            <text x="830" y="133" fill="#333" font-size="13" font-weight="bold">• Distribuidoras Autorizadas (DEX)</text>
+            <rect x="820" y="170" width="280" height="40" rx="5" fill="white" stroke="#0984e3" stroke-width="1"/>
+            <text x="830" y="188" fill="#333" font-size="13">• MAYORISTA - MA</text>
+            <text x="850" y="203" fill="#666" font-size="11">(DIRECTOS/VERTICALES)</text>
+            <rect x="820" y="218" width="280" height="40" rx="5" fill="white" stroke="#0984e3" stroke-width="1"/>
+            <text x="830" y="236" fill="#333" font-size="13">• CODISTRIBUIDORA - D3, D4</text>
+            <text x="850" y="251" fill="#666" font-size="11">(DIRECTOS/VERTICALES)</text>
+            <line x1="1120" y1="135" x2="1220" y2="135" stroke="#f39c12" stroke-width="3"/>
+            <text x="1170" y="125" text-anchor="middle" fill="#f39c12" font-size="12" font-weight="bold">SELL OUT</text>
+            <rect x="1220" y="100" width="180" height="80" rx="8" fill="#fff4e6" stroke="#f39c12" stroke-width="2"/>
+            <text x="1310" y="125" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">BO, PM, MM, MY, etc</text>
+            <text x="1310" y="145" text-anchor="middle" fill="#666" font-size="12">Puntos de venta</text>
+            <line x1="1400" y1="140" x2="1460" y2="140" stroke="#f39c12" stroke-width="3"/>
+            <text x="1430" y="130" text-anchor="middle" fill="#f39c12" font-size="12" font-weight="bold">SELL OUT</text>
+            <rect x="1460" y="105" width="120" height="80" rx="8" fill="#fdcb6e" stroke="#f39c12" stroke-width="2"/>
+            <text x="1520" y="130" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Cliente final</text>
+            <g transform="translate(1485, 145)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1520, 145)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1555, 145)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <line x1="1120" y1="225" x2="1200" y2="225" stroke="#0984e3" stroke-width="3"/>
+            <text x="1160" y="215" text-anchor="middle" fill="#0984e3" font-size="12" font-weight="bold">SELL OUT</text>
+            <rect x="1200" y="195" width="150" height="80" rx="8" fill="#e3f2fd" stroke="#0984e3" stroke-width="2"/>
+            <text x="1275" y="220" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Cliente final</text>
+            <g transform="translate(1230, 235)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1255, 235)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1280, 235)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+
+            <rect x="470" y="415" width="200" height="70" rx="10" fill="#8b7fea"/>
+            <text x="570" y="455" text-anchor="middle" fill="white" font-size="20" font-weight="bold">MODERNO</text>
+            <text x="690" y="440" fill="#0984e3" font-size="16" font-weight="bold">SELL IN</text>
+            <rect x="750" y="420" width="180" height="60" rx="8" fill="#e3f2fd" stroke="#0984e3" stroke-width="2"/>
+            <text x="840" y="448" text-anchor="middle" fill="#333" font-size="15" font-weight="bold">Supermercados</text>
+
+            <line x1="670" y1="450" x2="750" y2="450" stroke="#0984e3" stroke-width="3"/>
+            <line x1="930" y1="450" x2="1030" y2="450" stroke="#0984e3" stroke-width="3"/>
+            <text x="980" y="440" text-anchor="middle" fill="#0984e3" font-size="12" font-weight="bold">SELL OUT</text>
+            <rect x="1030" y="420" width="150" height="80" rx="8" fill="#e3f2fd" stroke="#0984e3" stroke-width="2"/>
+            <text x="1105" y="445" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Cliente final</text>
+            <g transform="translate(1055, 460)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1080, 460)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1105, 460)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1130, 460)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+            <g transform="translate(1155, 460)">
+              <circle cx="0" cy="0" r="4" fill="#333"/>
+              <circle cx="0" cy="10" r="6" fill="#333"/>
+              <line x1="0" y1="16" x2="0" y2="24" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="-3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="0" y1="24" x2="3" y2="30" stroke="#333" stroke-width="1.5"/>
+              <line x1="-3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+              <line x1="3" y1="16" x2="0" y2="20" stroke="#333" stroke-width="1.5"/>
+            </g>
+
+            <rect x="50" y="580" width="1500" height="100" rx="8" fill="#f8f9fa" stroke="#ddd" stroke-width="2"/>
+            <text x="80" y="610" fill="#333" font-size="16" font-weight="bold">Leyenda:</text>
+            <rect x="80" y="625" width="15" height="15" fill="#0984e3"/>
+            <text x="105" y="637" fill="#333" font-size="14" font-weight="bold">SELL IN:</text>
+            <text x="180" y="637" fill="#666" font-size="13">Venta de Alicorp hacia el canal o cliente directo (Datos que poseemos)</text>
+            <rect x="80" y="650" width="15" height="15" fill="#fdcb6e"/>
+            <text x="105" y="662" fill="#333" font-size="14" font-weight="bold">SELL OUT:</text>
+            <text x="190" y="662" fill="#666" font-size="13">Venta hacia el consumidor final (refleja la demanda real del mercado)</text>
+            <rect x="750" y="625" width="15" height="15" fill="#fff9e6" stroke="#f39c12" stroke-width="2"/>
+            <text x="775" y="637" fill="#333" font-size="14" font-weight="bold">⚠️ Diferenciación DEX:</text>
+            <text x="775" y="657" fill="#666" font-size="12">Las Distribuidoras (DEX) realizan un <tspan font-weight="bold">doble SELL OUT</tspan>: primero a puntos de venta (BO, PM, MM)</text>
+            <text x="775" y="672" fill="#666" font-size="12">y luego estos puntos venden al cliente final. Mayoristas y Codistribuidoras venden directo al cliente final.</text>
+          </svg>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="aplicaciones">Siguiente → Aplicaciones</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           APLICACIONES
+      ========================================================= -->
+      <section id="aplicaciones" class="tab-section">
+        <h2>📱 Aplicaciones DEX</h2>
+
+        <div class="app-card">
+          <img src="NITRO.png" alt="Aplicación NITRO" onerror="this.style.display='none'">
+          <div class="app-card-content">
+            <h4>Nitro</h4>
+            <ul>
+              <li>Aplicación de gestión de ventas en campo para las DEX</li>
+              <li>Creada específicamente para atender el canal horizontal</li>
+              <li>Permite implementar soluciones tecnológicas y analíticas</li>
+              <li>Dirigida principalmente a Promotores y Supervisores como usuarios clave</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="app-card" style="background: linear-gradient(135deg, var(--alicorp-blue) 0%, #003d7a 100%);">
+          <img src="DiaDia.jpg" alt="Aplicación DiaDia" onerror="this.style.display='none'">
+          <div class="app-card-content">
+            <h4>DiaDia</h4>
+            <ul>
+              <li>Modelo de venta digital de CMP (Consumo Masivo Perú) orientado a fortalecer el canal minorista</li>
+              <li>Utiliza una aplicación móvil para agilizar y modernizar la interacción con los clientes</li>
+              <li>Permite que los clientes registren pedidos en cualquier momento del día</li>
+              <li>Impulsa la transformación digital del proceso comercial en las DEX</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>🌐 Páginas Web</h3>
+
+        <div class="app-card" style="background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%); color: #333;">
+          <img src="insuma.png" alt="Plataforma Insuma" onerror="this.style.display='none'">
+          <div class="app-card-content">
+            <h4 style="color: #333;">Insuma</h4>
+            <ul style="color: #333;">
+              <li>Modelo de venta digital orientado a B2B</li>
+              <li>Utiliza una página web para agilizar y modernizar la interacción con los clientes</li>
+              <li>Permite que los clientes registren pedidos en cualquier momento del día</li>
+              <li>Impulsa la transformación digital del proceso comercial en las DEX</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="app-card" style="background: linear-gradient(135deg, var(--alicorp-yellow) 0%, #f59e0b 100%); color: #333;">
+          <img src="Aliados.jpg" alt="Plataforma Aliados" onerror="this.style.display='none'">
+          <div class="app-card-content">
+            <h4 style="color: #333;">Aliados</h4>
+            <ul style="color: #333;">
+              <li>Diseñado para clientes directos: mayoristas y codistribuidoras</li>
+              <li>Brinda facilidad para que los clientes realicen sus pedidos y consultas de manera autónoma</li>
+              <li>Los clientes ganan el doble de puntos en comparación con un pedido regular</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="proyectos">Siguiente → Proyectos</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           PROYECTOS (respetando tu contenido)
+      ========================================================= -->
+      <section id="proyectos" class="tab-section">
+        <h2>🎯 Proyectos</h2>
+
+        <!-- GTM -->
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">Go to Market (GTM) 2.0</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Brindar soporte analítico y soluciones que impulsen la toma de decisiones y el cumplimiento de objetivos estratégicos en el área comercial.</p>
+          </div>
+
+          <h3>🎲 SEGMENTACIÓN</h3>
+          <div class="responsible-list">
+            <strong>Responsables:</strong>
+            Brigitt Ramirez, Alexis Sucasaca, Verónica Cáceres, Camila Augurto, Diego Arroyo
+          </div>
+
+          <p><strong>Objetivo:</strong> Ordenar la base de clientes y priorizar recursos, asegurando que las estrategias lleguen de forma diferenciada según el valor y el potencial de cada cliente.</p>
+
+          <p style="margin-top: 15px;"><strong>Enfoques:</strong></p>
+          <ul style="margin-left: 20px;">
+            <li><strong>Transaccional:</strong> Según su valor de Utilidad Bruta Anual</li>
+            <li><strong>Estratégico:</strong> Perfil integral del cliente según similitudes en hábitos, entorno y capacidad</li>
+            <li><strong>Potencial:</strong> Modelos de Machine Learning para detección de clientes que puedan ascender de segmento</li>
+          </ul>
+
+          <h4 style="color: var(--alicorp-red); margin-top: 25px; font-family: 'Montserrat', sans-serif;">Iniciativas</h4>
+
+          <div class="initiative-box">
+            <h4>Surtido Ideal - CMP Tradicional</h4>
+            <p><strong>Encargada:</strong> Verónica Cáceres</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Incrementar la recurrencia de compra en bodegas</li>
+              <li>Diversificar los productos adquiridos por las bodegas</li>
+              <li>Enfocar el proyecto en la categoría Impulso</li>
+              <li>Delimitar el alcance actual a nivel vendedor</li>
+              <li>Articular el trabajo conjunto con Roma 2.5</li>
+            </ul>
+            <span class="status-badge status-desarrollo">En Desarrollo</span>
+          </div>
+
+          <div class="initiative-box">
+            <h4>Web de Clientes (Infaltables) - Segmentación de Mayoristas</h4>
+            <p><strong>Encargada:</strong> Camila Augurto</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Desarrollar un modelo de segmentación estratégica para clientes mayoristas</li>
+              <li>Combinar comportamiento de compra, margen y potencial de crecimiento</li>
+              <li>Enfocar el modelo en maximizar la rentabilidad del portafolio mayorista</li>
+            </ul>
+            <span class="status-badge status-produccion">Implementado y en mejora continua</span>
+          </div>
+
+          <h3 style="margin-top: 40px;">💎 LOYALTY</h3>
+          <div class="responsible-list">
+            <strong>Responsables:</strong>
+             David Alata, Iris Sutizal
+          </div>
+
+          <p><strong>Objetivo:</strong> Aumentar la cantidad de compras mediante un programa de recompensas enfocadas en el cliente.</p>
+
+          <h4 style="color: var(--alicorp-red); margin-top: 25px; font-family: 'Montserrat', sans-serif;">Iniciativas</h4>
+
+          <div class="initiative-box">
+            <h4>Iniciativa Piloto - CMP Tradicional</h4>
+            <p><strong>Encargada:</strong> Iris Sutizal</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Incrementar el ticket promedio de los clientes mediante los puntos otorgados en la app DiaDia</li>
+              <li>Visualizar una DEX como parte del seguimiento y análisis</li>
+              <li>Analizar bodegas y puestos de mercado para entender el impacto</li>
+            </ul>
+            <span class="status-badge status-piloto">Piloto</span>
+          </div>
+
+          <h3 style="margin-top: 40px;">🎯 PROMOCIONES</h3>
+          <div class="responsible-list">
+            <strong>Responsables:</strong>
+           Brigitt Ramirez , Camila Augurto, David Alata , Iris Sutizal
+          </div>
+
+          <p><strong>Objetivo:</strong> Diseñar, evaluar y optimizar promociones en CMP y AS mediante pilotos con rigor estadístico, maximizando uplift, demanda y rentabilidad.</p>
+
+          <h4 style="color: var(--alicorp-red); margin-top: 25px; font-family: 'Montserrat', sans-serif;">
+            Líneas de Trabajo
+          </h4>
+
+          <ul style="margin-left: 20px;">
+            <li>Diseñar y ejecutar pilotos de promociones CMP y AS con rigor estadístico y foco en aprendizajes accionables.</li>
+            <li>Definir promociones a escalar por zona, distribuidor y cliente según resultados de pilotos.</li>
+            <li>Medir la efectividad y rentabilidad promocional mediante KPIs y ROI.</li>
+            <li>Desarrollar modelos predictivos y de optimización para maximizar uplift, demanda y retorno.</li>
+            <li>Traducir los insights en recomendaciones claras para el equipo comercial y la planificación futura.</li>
+          </ul>
+
+          <span class="status-badge status-desarrollo">En Desarrollo</span>
+
+
+        
+
+        <!-- FINANZAS -->
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">💰 Finanzas</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Proyecto de analítica predictiva enfocado en estimar variables financieras clave como utilidad bruta y riesgo de impago.</p>
+          </div>
+
+          <h4 style="color: var(--alicorp-red); font-family: 'Montserrat', sans-serif;">Iniciativas</h4>
+
+          <div class="initiative-box">
+            <h4>Credit Scoring</h4>
+            <p><strong>Encargada:</strong> Sheila Ccahua</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Implementar un modelo de crédito para las DEX (distribuidoras oficiales)</li>
+              <li>Reducir el riesgo de impago, evitando que las DEX caigan en default</li>
+              <li>Mejorar la gestión crediticia y la toma de decisiones financieras</li>
+            </ul>
+            <span class="status-badge status-produccion">En Producción</span>
+          </div>
+
+          <div class="initiative-box">
+            <h4>Contabilidad de Gestión 3.0 Predictiva</h4>
+            <p><strong>Encargado:</strong> Alexis Balboa</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Implementar un modelo predictivo de utilidad bruta a partir del volumen de ventas, venta neta y costo de ventas</li>
+              <li>Desafiar y validar el forecast del negocio para mejorar la toma de decisiones</li>
+              <li>Aplicar el modelo en CMP (pastas, aceites y otras categorías) y AS (harinas, aceites y otras categorías)</li>
+            </ul>
+            <span class="status-badge status-piloto">Piloto</span>
+          </div>
+        </div>
+
+        <!-- MMM -->
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">📊 Marketing Mix Modeling (MMM)</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Optimizar la distribución de la inversión en medios para maximizar ventas incrementales y lograr retornos más eficientes.</p>
+          </div>
+
+          <div class="responsible-list">
+            <strong>Encargado:</strong> Alexis Castillo
+          </div>
+
+          <h4 style="color: var(--alicorp-red); margin-top: 20px; font-family: 'Montserrat', sans-serif;">Objetivos</h4>
+          <ul style="margin-left: 20px;">
+            <li>Incrementar ventas mediante decisiones informadas y orientadas a datos</li>
+            <li>Generar retornos más eficientes optimizando recursos y estrategias comerciales</li>
+            <li>Elaborar un análisis descriptivo histórico para entender tendencias y patrones clave</li>
+            <li>Realizar un análisis predictivo alineado al nuevo presupuesto</li>
+            <li>Incorporar variables externas e internas que puedan afectar el desempeño del negocio</li>
+            <li>Utilizar modelos predictivos para anticipar escenarios y apoyar la toma de decisiones estratégicas</li>
+          </ul>
+
+          <span class="status-badge status-prepiloto">Pre-piloto</span>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="trabajos-transversales">Siguiente → Trabajos Transversales</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           TRABAJOS TRANSVERSALES
+      ========================================================= -->
+      <section id="trabajos-transversales" class="tab-section">
+        <h2>🧩 Trabajos Transversales</h2>
+
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">Trabajos Transversales</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Iniciativas habilitadoras que fortalecen la ejecución y escalabilidad de los proyectos de Advanced Analytics.</p>
+          </div>
+
+          <div class="initiative-box">
+            <h4>MLOps</h4>
+            <p><strong>Encargada:</strong> Alexis Castillo</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Adaptación de modelos ante cambios en la estrategia de negocio</li>
+              <li>Construcción de modelos flexibles y escalables</li>
+              <li>Generación de confianza mediante procesos reproducibles y consistentes</li>
+              <li>Reducción del tiempo de despliegue para nuevos modelos (mayor escalabilidad)</li>
+              <li>Automatización completa de la fase de experimentación</li>
+              <li>Implementación de trazabilidad end-to-end (detección de causas de errores y desviaciones)</li>
+            </ul>
+            <span class="status-badge status-desarrollo">Habilitador Estratégico</span>
+          </div>
+
+          <div class="initiative-box">
+            <h4>Modelo Dimensional</h4>
+            <p><strong>Encargada:</strong> Alexis Sucasaca</p>
+            
+            <p><strong>Objetivo:</strong> Diseñar y consolidar un modelo de datos (dimensiones/hechos) para análisis consistente y autoservicio.</p>
+
+            <ul style="margin-left: 20px; margin-top: 10px;">
+              <li>Ambiente donde se encuentran las principales features a utilizar de cara al análisis comercial.</li>
+              <li>Dataset en estado productivo que conecta las principales fuentes de información de las ventas de Alicorp y sus dimensiones.</li>
+            </ul>
+
+            <span class="status-badge status-prepiloto">Productivo</span>
+
+            <!-- Imagen Modelo Dimensional -->
+            <div style="margin-top: 20px; text-align: center;">
+              <img src="modelo_dimensional.jpg"
+                  alt="Modelo Dimensional"
+                  style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            </div>
+          </div>
+
+
+        <div class="section-nav">
+          <button class="nav-btn" type="button" data-go="areas-negocio">Siguiente → Áreas de Negocio</button>
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Menú</button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           ÁREAS DE NEGOCIO
+      ========================================================= -->
+      <section id="areas-negocio" class="tab-section">
+        <h2>🏢 Áreas de Negocio</h2>
+
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">Finanzas</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Estructura organizacional del área Finanzas.</p>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <img src="finanzas.png" alt="Organigrama Finanzas" class="team-photo" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">Comercial</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Estructura organizacional del área comercial dividida por unidad de negocio.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-top: 25px;">
+            <div>
+              <h4 style="color: var(--alicorp-red); font-family: 'Montserrat', sans-serif; margin-bottom: 15px;">Alicorp Soluciones (AS)</h4>
+              <img src="org_as.png" alt="Organigrama Alicorp Soluciones" class="team-photo" onerror="this.style.display='none'">
+            </div>
+
+            <div>
+              <h4 style="color: var(--alicorp-blue); font-family: 'Montserrat', sans-serif; margin-bottom: 15px;">Consumo Masivo (CMP)</h4>
+              <img src="org_cmp.png" alt="Organigrama Consumo Masivo" class="team-photo" onerror="this.style.display='none'">
+
+              <p style="margin-top: 15px; font-size: 0.9em; color: #777; font-style: italic;">
+                * Lucía Andrea Puertas Balletta pertenece a CMP como Jefa de Segmentos y reporta directamente a Irene Elci Sifuentes Lopez.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-box">
+          <div class="project-header">
+            <h3 style="color: white; margin: 0; font-family: 'Montserrat', sans-serif;">Loyalty</h3>
+            <p style="margin-top: 10px; font-weight: 500;">Estructura organizacional del área Loyalty.</p>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <img src="org_loyalty.png" alt="Organigrama Loyalty" class="team-photo" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="section-nav">
+          <button class="nav-btn secondary" type="button" onclick="showMenu()">⟵ Volver al Menú</button>
+          <button class="nav-btn" type="button" data-go="organigrama">↺ Ir al inicio (Organigrama)</button>
+        </div>
+      </section>
+
+
+
+      <footer>
+        <p>© 2026 Advanced Analytics - Alicorp</p>
+        <p style="margin-top: 10px; font-size: 0.9em; color: var(--alicorp-gray);">Material de Capacitación Interna</p>
+        <p style="margin-top: 15px; font-size: 0.85em; color: var(--alicorp-green); font-style: italic;">✨ Alimentando un mañana mejor ✨</p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="scroll-top" id="scrollTop">↑</div>
+
+  <script>
+    // Scroll to top
+    const scrollTopBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) scrollTopBtn.classList.add('visible');
+      else scrollTopBtn.classList.remove('visible');
+    });
+    scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ====== Menú inicial / Vistas ======
+    const menuView = document.getElementById("menuView");
+    const contentView = document.getElementById("contentView");
+    const backBtn = document.getElementById("backBtn");
+    const sectionTitle = document.getElementById("sectionTitle"); // (ya no se muestra por CSS)
+    const sections = document.querySelectorAll(".tab-section");
+
+    function showMenu(){
+      contentView.classList.remove("active");
+      menuView.classList.add("active");
+      sections.forEach(s => s.classList.remove("active"));
+      if(sectionTitle) sectionTitle.textContent = "";
+      window.scrollTo(0,0);
+    }
+
+    function showSection(id){
+      menuView.classList.remove("active");
+      contentView.classList.add("active");
+
+      sections.forEach(s => {
+        if(s.id === id){
+          s.classList.add("active");
+          const h2 = s.querySelector("h2");
+          if(sectionTitle) sectionTitle.textContent = h2 ? h2.textContent : "";
+        } else {
+          s.classList.remove("active");
+        }
+      });
+
+      window.scrollTo(0,0);
+    }
+
+    // Click tarjetas menú
+    document.querySelectorAll(".menu-card").forEach(card => {
+      card.addEventListener("click", () => showSection(card.dataset.go));
+    });
+
+    // Botón volver al menú (top)
+    if(backBtn) backBtn.addEventListener("click", showMenu);
+
+    // ✅ Navegación inferior entre secciones
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      // Si tiene data-go, usamos showSection
+      if(btn.dataset.go){
+        btn.addEventListener("click", () => showSection(btn.dataset.go));
+      }
+    });
+
+    // Arranca en menú
+    showMenu();
+  </script>
+</body>
+</html>
